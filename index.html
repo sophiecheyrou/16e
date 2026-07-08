@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#2c3e50" />
+  <meta name="description" content="Course d'orientation — Découverte du 16e arrondissement de Paris" />
+  <title>Découverte du 16e arrondissement</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.png" />
+  <style>
+    :root {
+      --stone: #e8e2d9;
+      --stone-light: #f7f4f0;
+      --stone-dark: #c8bfb0;
+      --blue: #2c3e50;
+      --blue-light: #4a6278;
+      --accent: #3a7ca5;
+      --white: #ffffff;
+      --danger: #c0392b;
+      --success: #27ae60;
+      --shadow: 0 2px 8px rgba(0,0,0,0.10);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--stone-light);
+      color: var(--blue);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--blue);
+      color: var(--white);
+      padding: 24px 20px 20px;
+      text-align: center;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
+    }
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    /* ── ALERT BANNER ── */
+    .alert {
+      background: var(--danger);
+      color: var(--white);
+      text-align: center;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 16px;
+      margin: 16px 12px;
+      border-radius: var(--radius);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      background: var(--white);
+      margin: 16px 12px;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .section h2 {
+      font-size: 1.2rem;
+      color: var(--blue);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--stone);
+    }
+    .section p { margin-bottom: 10px; font-size: 0.95rem; }
+    .section ul { padding-left: 20px; }
+    .section ul li { margin-bottom: 4px; font-size: 0.95rem; }
+
+    /* ── MAP ── */
+    .map-container {
+      width: 100%;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .map-container iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      display: block;
+    }
+
+    /* ── CHECKLIST ── */
+    .progress-bar-wrap {
+      background: var(--stone);
+      border-radius: 20px;
+      height: 22px;
+      margin-bottom: 14px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: var(--accent);
+      height: 100%;
+      border-radius: 20px;
+      transition: width 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 0.78rem;
+      font-weight: 700;
+      min-width: 40px;
+    }
+    .lieux-list {
+      list-style: none;
+      padding: 0;
+    }
+    .lieux-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--stone-light);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .lieux-list li:last-child { border-bottom: none; }
+    .lieux-list li:hover { background: var(--stone-light); }
+    .lieux-list li.checked span {
+      text-decoration: line-through;
+      color: #888;
+    }
+    .lieux-list li.checked .lieu-num {
+      background: var(--accent);
+      color: var(--white);
+    }
+    .lieu-checkbox {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      border: 2px solid var(--stone-dark);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      background: var(--white);
+      transition: all 0.15s;
+    }
+    .lieux-list li.checked .lieu-checkbox {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--white);
+    }
+    .lieu-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--stone);
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .lieu-name {
+      font-size: 0.93rem;
+      line-height: 1.4;
+      padding-top: 3px;
+    }
+
+    /* ── BOUTON ENVOI PHOTO ── */
+    .btn-photo {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      margin: 24px auto;
+      padding: 18px 24px;
+      background: var(--success);
+      color: var(--white);
+      font-size: 1.15rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(39, 174, 96, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-photo:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(39, 174, 96, 0.45);
+    }
+    .btn-photo:active { transform: translateY(0); }
+
+    /* ── PWA INSTALL ── */
+    #installBanner {
+      display: none;
+      background: var(--blue);
+      color: var(--white);
+      text-align: center;
+      padding: 16px 20px;
+      margin: 0 12px 16px;
+      border-radius: var(--radius);
+    }
+    #installBanner p { font-size: 0.9rem; margin-bottom: 10px; }
+    #installBtn {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    #dismissBtn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.8);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      color: var(--stone-dark);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (min-width: 600px) {
+      header h1 { font-size: 2rem; }
+      .map-container iframe { height: 480px; }
+      .section { margin: 20px auto; max-width: 700px; }
+      .alert { max-width: 696px; margin: 20px auto; }
+      #installBanner { max-width: 696px; margin: 0 auto 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>🏛️ Découverte du 16e arrondissement</h1>
+    <p>Course d'orientation — Lycée Jean Zay</p>
+  </header>
+
+  <!-- ALERTE RETOUR -->
+  <div class="alert">
+    ⚠️ RETOUR IMPÉRATIF AU LYCÉE À 11H DERNIER DÉLAI ⚠️
+  </div>
+
+  <!-- INFORMATIONS -->
+  <section class="section" id="infos">
+    <h2>📋 Informations</h2>
+    <p><strong>Rendez-vous :</strong> le 1er septembre dans le <em>Grand Salon</em> du lycée Jean Zay (10 rue du Docteur Blanche, Paris 16e).</p>
+    <p><strong>Départs :</strong> échelonnés toutes les 5 minutes, à partir de 9h, pour 40 équipes.</p>
+    <p><strong>Équipes :</strong> 5 à 10 personnes par équipe.</p>
+    <p><strong>Durée du jeu :</strong> 1h à 2h maximum.</p>
+    <p><strong>Retour impératif :</strong> à 11h dernier délai — tous les élèves doivent être rentrés au lycée Jean Zay.</p>
+  </section>
+
+  <!-- RÈGLES DU JEU -->
+  <section class="section" id="regles">
+    <h2>🎮 Règles du jeu</h2>
+    <p>L'objectif : <strong>découvrir un maximum de lieux</strong> parmi les 19 proposés.</p>
+    <p>Pour chaque lieu découvert :</p>
+    <ul>
+      <li>Prenez un <strong>selfie d'équipe</strong> sur place</li>
+      <li>Envoyez la photo <strong>dès le passage sur place</strong> via le formulaire ci-dessous</li>
+    </ul>
+    <p style="margin-top:12px"><strong>🏆 Lots à gagner :</strong></p>
+    <ul>
+      <li><strong>1er prix :</strong> équipe ayant découvert le plus de lieux (les photos faisant foi)</li>
+      <li><strong>2e prix :</strong> équipe tirée au sort aléatoirement parmi toutes les participantes</li>
+    </ul>
+  </section>
+
+  <!-- CARTE INTERACTIVE -->
+  <section class="section" id="carte">
+    <h2>🗺️ Carte interactive</h2>
+    <div class="map-container">
+      <iframe
+        src="https://www.google.com/maps/d/embed?mid=1vlNQYWHdgVHWTnkunxycut_ygynVxM8&ehbc=2E312F"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Carte des lieux à découvrir dans le 16e arrondissement">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- LISTE DES 19 LIEUX -->
+  <section class="section" id="lieux">
+    <h2>📍 19 lieux à découvrir</h2>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill">0 / 19</div>
+    </div>
+    <ul class="lieux-list" id="lieuxList">
+    </ul>
+  </section>
+
+  <!-- BOUTON ENVOI PHOTO -->
+  <a class="btn-photo"
+     href="https://forms.gle/akBav1dUErtmUffG8"
+     target="_blank"
+     rel="noopener noreferrer">
+    📸 Envoyer une photo
+  </a>
+
+  <!-- BANNER INSTALLATION PWA -->
+  <div id="installBanner">
+    <p>📱 Installez cette application pour un accès rapide sur votre téléphone !</p>
+    <button id="installBtn">Installer l'application</button>
+    <button id="dismissBtn">Plus tard</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    Course d'orientation — Lycée Jean Zay — Rentrée CPGE
+  </footer>
+
+  <script>
+    /* ── LISTE DES 19 LIEUX ── */
+    const LIEUX = [
+      "Lycée d'état Jean Zay",
+      "Village d'Auteuil",
+      "La Ressourcerie d'Apprentis d'Auteuil",
+      "Piscine d'Auteuil",
+      "Lacs et cascade du Bois de Boulogne",
+      "Stade Roland Garros",
+      "Parc des Princes",
+      "Stade Jean Bouin",
+      "Statue Jean de la Fontaine",
+      "Franprix",
+      "Pharmacie Lafayette",
+      "Maison de Balzac",
+      "Rue Mallet-Stevens",
+      "Hippodrome d'Auteuil",
+      "Métro Ranelagh",
+      "Musée Marmottan Monet",
+      "Jardin des serres d'Auteuil",
+      "Espace Cross‑training - Square Tolstoï",
+      "Hôtel et piscine Molitor"
+    ];
+
+    const STORAGE_KEY = "decouverte16e_checked";
+    const MAX_LIEUX = LIEUX.length;
+
+    /* ── RENDU INITIAL ── */
+    function loadState() {
+      let state;
+      try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+      catch { state = []; }
+      if (!Array.isArray(state)) state = [];
+      // s'assurer que le tableau a la bonne taille
+      while (state.length < MAX_LIEUX) state.push(false);
+      return state;
+    }
+
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function renderList(state) {
+      const list = document.getElementById("lieuxList");
+      list.innerHTML = "";
+      LIEUX.forEach((nom, i) => {
+        const li = document.createElement("li");
+        if (state[i]) li.classList.add("checked");
+        li.innerHTML =
+          `<div class="lieu-checkbox">${state[i] ? "✔" : ""}</div>` +
+          `<div class="lieu-num">${i + 1}</div>` +
+          `<span class="lieu-name">${nom}</span>`;
+        li.addEventListener("click", () => toggleItem(i, state));
+        list.appendChild(li);
+      });
+      updateProgress(state);
+    }
+
+    function toggleItem(index, state) {
+      state[index] = !state[index];
+      saveState(state);
+      renderList(state);
+    }
+
+    function updateProgress(state) {
+      const done = state.filter(Boolean).length;
+      const pct  = (done / MAX_LIEUX * 100).toFixed(0);
+      const fill = document.getElementById("progressFill");
+      fill.style.width = pct + "%";
+      fill.textContent  = done + " / " + MAX_LIEUX;
+    }
+
+    /* ── INIT ── */
+    const state = loadState();
+    renderList(state);
+
+    /* ── SERVICE WORKER ── */
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("service-worker.js")
+        .then(() => console.log("SW registered"))
+        .catch(err => console.warn("SW registration failed:", err));
+    }
+
+    /* ── PWA INSTALL PROMPT ── */
+    let deferredPrompt = null;
+    const installBanner = document.getElementById("installBanner");
+    const installBtn    = document.getElementById("installBtn");
+    const dismissBtn    = document.getElementById("dismissBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const dismissed = localStorage.getItem("pwa_install_dismissed");
+      if (!dismissed) installBanner.style.display = "block";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      installBanner.style.display = "none";
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+    });
+
+    dismissBtn.addEventListener("click", () => {
+      installBanner.style.display = "none";
+      localStorage.setItem("pwa_install_dismissed", "1");
+    });
+
+    window.addEventListener("appinstalled", () => {
+      installBanner.style.display = "none";
+      deferredPrompt = null;
+    });
+  </script>
+</body>
+</html>
