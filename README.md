@@ -1,35 +1,44 @@
-# Découverte du 16e arrondissement — PWA
+# Jean Zay Explorer — V2
 
-Application web installable (PWA) pour la course d'orientation du lycée Jean Zay (Paris 16e).
+Jeu de découverte du 16e arrondissement — lundi 31 août 2026, de 9 h à 11 h.
 
-## Déploiement sur GitHub Pages
+## Mise en ligne immédiate
 
-1. **Créer un dépôt GitHub** : rendez-vous sur [github.com](https://github.com), connectez-vous, cliquez sur **New repository**, donnez-lui un nom (ex. `decouverte-16e`), puis **Create repository**.
+1. Décompressez le ZIP.
+2. Déposez tous les fichiers sauf `Code.gs` dans le dépôt GitHub Pages actuel.
+3. Validez les changements avec **Commit changes**.
+4. Rechargez la PWA. En cas d’ancienne version persistante, videz le cache du navigateur ou désinstallez/réinstallez la PWA.
 
-2. **Uploader les fichiers** : dans votre nouveau dépôt, cliquez sur **Add file → Upload files**, puis glissez-déposez les 4 fichiers suivants (ainsi que `icon.png` que vous ajouterez aussi) :
-   - `index.html`
-   - `manifest.json`
-   - `service-worker.js`
-   - `icon.png`
-   
-   Cliquez ensuite sur **Commit changes**.
+La V2 fonctionne immédiatement en **mode démonstration locale** : équipe, photos, progression et distance sont enregistrées sur le téléphone utilisé.
 
-3. **Activer GitHub Pages** : allez dans les **Settings** du dépôt → section **Pages** (à gauche) → **Source** : réglez sur **Deploy from a branch**, puis choisissez la branche **`main`** et le dossier **`/ (root)`**. Cliquez **Save**.
+## Code organisateur
 
-4. **Récupérer l'URL** : après quelques minutes, votre site sera accessible à l'adresse :
-   `https://VOTRE-USERNAME.github.io/decouverte-16e/`
+Le code provisoire est `1600`. Il peut être modifié dans :
+- `app.js` → `ADMIN_PIN`
+- `admin.js` → `ADMIN_PIN`
+- `Code.gs` → `ADMIN_PIN`
 
-5. **Tester l'installation PWA** : ouvrez l'URL sur un téléphone Android, Chrome affichera automatiquement une bannière « Installer l'application ». Sur iPhone/iPad, ouvrez le lien dans Safari puis appuyez sur le bouton de partage (⌖) → **« Sur l'écran d'accueil »**.
+## Activer le mode partagé Google Sheets / Drive
 
-## Contenu des fichiers
+1. Créez un Google Sheet vide.
+2. Créez un dossier Drive destiné aux photos.
+3. Dans Apps Script, collez le contenu de `Code.gs`.
+4. Remplacez `SHEET_ID` et `DRIVE_FOLDER_ID`.
+5. Déployez le script comme **Application Web**, accessible à toute personne disposant du lien.
+6. Copiez l’URL du déploiement.
+7. Collez-la dans `app.js` et `admin.js`, dans `CONFIG.API_URL`.
 
-| Fichier | Rôle |
-|---|---|
-| `index.html` | Interface mobile — carte, checklist, formulaire, install PWA |
-| `manifest.json` | Métadonnées PWA (nom, icône, mode d'affichage) |
-| `service-worker.js` | Cache offline pour fonctionnement sans connexion |
-| `icon.png` | Icône 512×512 px (à fournir, voir ci-dessous) |
+### Important
 
-## Icône
+Le front est entièrement prêt. Le fichier `Code.gs` fournit la structure du backend, mais l’envoi binaire des photos devra être finalisé en base64 pour Google Apps Script. Tant que `API_URL` reste vide, aucune photo ne quitte le téléphone.
 
-L'icône `icon.png` (512×512 px) doit être placée au même niveau que `index.html` dans le dépôt. Elle doit représenter le thème du 16e arrondissement. Vous pouvez la créer gratuitement sur [Canva](https://www.canva.com) ou [favicon.io](https://favicon.io/favicon-generator/).
+## Fichiers
+
+- `index.html` : application élèves
+- `admin.html` : tableau organisateur
+- `styles.css` : design
+- `app.js` : logique du jeu
+- `admin.js` : logique organisateur
+- `manifest.json` : installation PWA
+- `service-worker.js` : fonctionnement hors connexion
+- `Code.gs` : backend Google Apps Script
